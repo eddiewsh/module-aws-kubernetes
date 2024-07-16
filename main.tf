@@ -25,6 +25,12 @@ resource "aws_iam_role" "ms-cluster" {
 POLICY
 }
 
+#Policy
+resource "aws_iam_role_policy_attachment" "ms-cluster-AmazonEKSClusterPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.ms-cluster.name
+}
+
 resource "aws_security_group" "ms-cluster" {
   name   = local.cluster_name
   vpc_id = var.vpc_id
@@ -55,10 +61,6 @@ resource "aws_eks_cluster" "ms-up-running" {
   ]
 }
 
-resource "aws_iam_role_policy_attachment" "ms-cluster-AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.ms-cluster.name
-}
 # Node Role
 resource "aws_iam_role" "ms-node" {
   name = "${local.cluster_name}.node"
@@ -91,7 +93,6 @@ resource "aws_iam_role_policy_attachment" "ms-node-AmazonEKS_CNI_Policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "ms-node-AmazonEC2ContainerRegistryReadOnly" {
-
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.ms-node.name
 }
